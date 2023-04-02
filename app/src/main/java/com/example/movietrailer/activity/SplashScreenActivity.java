@@ -1,10 +1,12 @@
-package com.example.movietrailer;
+package com.example.movietrailer.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+
+import com.example.movietrailer.R;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
