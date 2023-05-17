@@ -1,5 +1,6 @@
 package com.example.movietrailer.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.movietrailer.R;
@@ -73,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick() {
                 showMessage(Constant.MOVIE_TITLE);
+                startActivity(new Intent(MainActivity.this, DetailActivity.class));
             }
         });
         layoutManager = new GridLayoutManager(this,2);
