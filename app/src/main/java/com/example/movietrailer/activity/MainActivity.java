@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private MainAdapter adapter;
     private List<MovieModel.Results> movieList = new ArrayList<>();
     private ProgressBar progressBar;
+    private String movieCategory = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,11 +62,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        getMoviePopular();
+        if(movieCategory == null){
+            movieCategory = Constant.POPULAR;
+        }
+        getMovie();
     }
 
     private void setupRecyclerView() {
-        adapter = new MainAdapter(movieList, this);
+        adapter = new MainAdapter(movieList, this, new MainAdapter.AdapterListener() {
+            @Override
+            public void onClick() {
+                showMessage(Constant.MOVIE_TITLE);
+            }
+        });
         layoutManager = new GridLayoutManager(this,2);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
@@ -76,14 +85,25 @@ public class MainActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progress_loading);
     }
 
-    private void getMoviePopular() {
+    private void getMovie() {
         showLoading(true);
-        Call<MovieModel> call = service.getPopularMovie(
-                Constant.API_KEY,
-                Constant.LANGUAGE,
-                "1"
-        );
+        Call<MovieModel> call = null;
 
+        switch (movieCategory) {
+            case Constant.POPULAR:
+                call = service.getPopularMovie(
+                        Constant.API_KEY,
+                        Constant.LANGUAGE,
+                        "1"
+                );
+                break;
+            case Constant.NOW_PLAYING:
+                call = service.getNowPlaying(Constant.API_KEY,
+                        Constant.LANGUAGE,
+                        "1"
+                );
+                break;
+        }
         call.enqueue(new Callback<MovieModel>() {
             @Override
             public void onResponse(Call<MovieModel> call, Response<MovieModel> response) {
@@ -135,9 +155,15 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_popular) {
-            showMessage("Popular");
+            getSupportActionBar().setTitle("Popular");
+            movieCategory = Constant.POPULAR;
+            getMovie();
+            return true;
         } else if (id == R.id.action_now_playing) {
-            showMessage("Now Playing");
+            getSupportActionBar().setTitle("Now Playing");
+            movieCategory = Constant.NOW_PLAYING;
+            getMovie();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

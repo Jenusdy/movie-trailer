@@ -15,4 +15,11 @@ public interface MovieService {
             @Query("page") String page
     );
 
+    @GET("movie/now_playing")
+    Call<MovieModel> getNowPlaying(
+            @Query("api_key") String api_key,
+            @Query("language") String language,
+            @Query("page") String page
+    );
+
 }

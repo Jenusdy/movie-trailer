@@ -21,10 +21,12 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
     private List<MovieModel.Results> resultsList;
     private Context context;
+    private AdapterListener listener;
 
-    public MainAdapter(List<MovieModel.Results> resultsList, Context context) {
+    public MainAdapter(List<MovieModel.Results> resultsList, Context context, AdapterListener listener) {
         this.resultsList = resultsList;
         this.context = context;
+        this.listener = listener;
     }
 
     @NonNull
@@ -47,6 +49,16 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
                 .placeholder(R.drawable.placeholder_portrait)
                 .error(R.drawable.placeholder_portrait)
                 .into(holder.image);
+
+        holder.image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Constant.MOVIE_ID = result.getId();
+                Constant.MOVIE_TITLE = result.getTitle();
+
+                listener.onClick();
+            }
+        });
     }
 
     @Override
@@ -72,4 +84,9 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         resultsList.addAll(res);
         notifyDataSetChanged();
     }
+
+    public interface AdapterListener {
+        void onClick();
+    }
+
 }
